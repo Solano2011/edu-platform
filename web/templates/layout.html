@@ -1,80 +1,65 @@
 {{define "layout"}}
 <!DOCTYPE html>
-<html lang="ru" class="h-full">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{.Title}}</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Playfair Display -->
+    
+    <!-- Google Fonts: Old Standard TT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: {
+                        serif: ['"Old Standard TT"', 'serif'],
+                        sans: ['"Old Standard TT"', 'serif']
+                    },
                     colors: {
                         burgundy: {
-                            950: '#1A0407',
-                            900: '#2A080D',
-                            800: '#3D1016',
-                            700: '#4A0E17',
-                            600: '#5F141F',
+                            800: '#58111A',
+                            900: '#3B0A0F',
+                            950: '#2A060A',
                         },
                         gold: {
-                            200: '#FFF6CC',
-                            300: '#FFF0A6',
-                            400: '#FFD700',
+                            300: '#F3E5AB',
+                            400: '#E6CA65',
                             500: '#D4AF37',
-                            600: '#AA8220'
+                            600: '#AA820A',
                         }
-                    },
-                    fontFamily: {
-                        serif: ['"Playfair Display"', 'serif'],
                     }
                 }
             }
         }
     </script>
     <style>
-        /* Фоновая историческая карта с глубоким затемнением бургунди */
         body {
-            background-color: #3D1016;
-            background-image: 
-                linear-gradient(rgba(74, 14, 23, 0.88), rgba(61, 16, 22, 0.90)),
-                url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1600&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
+            font-family: 'Old Standard TT', serif;
         }
-
-        /* Золотая рамка и мягкое свечение при наведении */
         .gold-border-card {
-            border: 2px solid #D4AF37;
-            box-shadow: 0 10px 30px rgba(42, 8, 13, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
             transition: all 0.3s ease;
         }
-
         .gold-border-card:hover {
-            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
-            transform: translateY(-4px);
-        }
-
-        * {
-            font-style: italic;
+            border-color: rgba(212, 175, 55, 0.9);
+            box-shadow: 0 15px 30px -5px rgba(212, 175, 55, 0.2), 0 10px 15px -5px rgba(0, 0, 0, 0.6);
         }
     </style>
 </head>
-<body class="min-h-full flex flex-col justify-between text-gray-900 selection:bg-gold-500 selection:text-burgundy-900 overflow-x-hidden">
+<body class="bg-burgundy-950 text-gray-900 min-h-screen flex flex-col font-serif selection:bg-gold-500 selection:text-burgundy-950">
 
-   <!-- Шапка (Навбар) -->
+    <!-- Фоновая текстура карты -->
+    <div class="fixed inset-0 pointer-events-none z-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=1920&auto=format&fit=crop')] bg-cover bg-center"></div>
+
+    <!-- Шапка (Навбар) -->
     <header class="w-full bg-burgundy-900/95 border-b border-gold-500/40 px-6 sm:px-12 py-4 flex items-center justify-between shadow-xl backdrop-blur-sm sticky top-0 z-40">
-        <!-- Левая часть: только логотип и название -->
         <div class="flex items-center space-x-4 sm:space-x-6">
             <a href="/" class="text-gold-400 font-bold text-xl sm:text-2xl tracking-wide hover:text-gold-300 transition-colors">
                 EduPlatform
@@ -84,7 +69,6 @@
             </span>
         </div>
 
-       <!-- Правая часть: кнопки действий с учетом прав пользователя -->
         <div class="flex items-center space-x-4">
             {{if .IsAdmin}}
             <a href="/admin/lessons/new" class="text-xs sm:text-sm text-gold-300/80 hover:text-gold-300 transition-colors hidden md:inline-block">
@@ -109,53 +93,16 @@
         </div>
     </header>
 
-
     <!-- Основной контент страницы -->
-    <main class="flex-grow flex items-center justify-center px-4 sm:px-8 py-10 w-full max-w-6xl mx-auto">
+    <main class="flex-grow flex flex-col items-center justify-center p-6 sm:p-12 relative z-10 w-full">
         {{template "content" .}}
     </main>
 
-    <!-- Подвал -->
-    <footer class="w-full bg-burgundy-900/90 text-gold-400/70 text-center py-4 border-t border-gold-500/20 text-sm">
-        © 2026 EduPlatform. Все права защищены.
+    <!-- Подвал сайта -->
+    <footer class="w-full bg-burgundy-950/90 border-t border-gold-500/20 py-6 text-center text-xs sm:text-sm text-gold-300/60 relative z-10">
+        <p>© 2026 EduPlatform. Все права защищены.</p>
     </footer>
 
-    <!-- Кастомное модальное окно -->
-    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-burgundy-800 border-2 border-gold-500 p-8 rounded-2xl max-w-md w-full mx-4 text-center shadow-2xl transform scale-95 transition-transform duration-300 text-gold-300" id="modalContent">
-            <h3 id="modalTitle" class="text-2xl font-bold mb-3 text-gold-400">Уведомление</h3>
-            <p id="modalText" class="text-gray-200 mb-6 text-base sm:text-lg">Текст сообщения</p>
-            <button onclick="closeModal()" class="px-6 py-2 rounded-xl bg-gold-500 text-burgundy-900 font-bold hover:bg-gold-400 transition-colors shadow-md">
-                Понятно
-            </button>
-        </div>
-    </div>
-
-    <script>
-        function openModal(title, text) {
-            const modal = document.getElementById('customModal');
-            const content = document.getElementById('modalContent');
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalText').textContent = text || 'Раздел доступен после авторизации.';
-
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('customModal');
-            const content = document.getElementById('modalContent');
-
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('opacity-0', 'pointer-events-none');
-            }, 200);
-        }
-    </script>
 </body>
 </html>
 {{end}}
