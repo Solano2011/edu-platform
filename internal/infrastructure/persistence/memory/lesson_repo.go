@@ -2,6 +2,7 @@ package memory
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	"edu-platform/internal/domain/lesson"
@@ -141,4 +142,32 @@ func (r *LessonRepository) seed() {
 	)
 
 	r.lessons = []*lesson.Lesson{l1, l2, l3, l4}
+}
+
+func (r *LessonRepository) Save(ctx context.Context, l *lesson.Lesson) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for _, existing := range r.lessons {
+		if existing.Slug() == l.Slug() {
+			return errors.New("lesson with this slug already exists")
+		}
+	}
+
+	r.lessons = append([]*lesson.Lesson{l}, r.lessons...) // Добавляем новый урок в начало списка
+	return nil
+}
+
+func (r *LessonRepository) Delete(ctx context.Context, slug string) error {
+	r.mu.Lock()
+	defer r.mu.Unlock()
+
+	for i, l := range r.lessons {
+		if l.Slug() == slug {
+			// Удаляем элемент из среза с сохранением порядка остальных
+			r.lessons = append(r.lessons[:i], r.lessons[i+1:]...)
+			return nil
+		}
+	}
+	return lesson.ErrLessonNotFound
 }

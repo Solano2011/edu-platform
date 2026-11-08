@@ -29,7 +29,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	router := httpDelivery.NewRouter(homeHandler, "web/static")
+	adminHandler, err := handler.NewAdminHandler(lessonUseCase, "web/templates", logger)
+	if err != nil {
+		logger.Error("failed to initialize admin handler", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+
+	router := httpDelivery.NewRouter(homeHandler, adminHandler, "web/static")
 
 	srv := &http.Server{
 		Addr:         ":8080",

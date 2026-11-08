@@ -58,4 +58,14 @@
         margin-bottom: 0.5rem;
     }
 </style>
+<div class="lesson-body" style="font-size: 1.05rem; line-height: 1.75; color: var(--text-main);">
+        {{.Lesson.BodyHTML}}
+    </div>
+
+    <form action="/admin/lessons/{{.Lesson.Slug}}/delete" method="POST" style="margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid rgba(54, 21, 14, 0.15);" onsubmit="return confirm('Вы уверены, что хотите удалить этот урок?');">
+        <button type="submit" style="background-color: #993947; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s;">
+            🗑 Удалить этот урок
+        </button>
+    </form>
+</article>
 {{end}}

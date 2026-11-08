@@ -4,6 +4,7 @@ import (
 	"context"
 	"edu-platform/internal/domain/lesson"
 	"html/template"
+	"time"
 )
 
 type UseCase struct {
@@ -60,4 +61,32 @@ func (uc *UseCase) GetLessonBySlug(ctx context.Context, slug string) (DetailDTO,
 		ReadingTime:   l.ReadingTime(),
 		DateFormatted: l.PublishedAt().Format("02.01.2006"),
 	}, nil
+}
+
+func (uc *UseCase) CreateLesson(ctx context.Context, input CreateLessonInput) error {
+	subj := lesson.Subject(input.Subject)
+	cType := lesson.ContentType(input.ContentType)
+
+	id := time.Now().Format("20060102150405")
+
+	newLesson, err := lesson.NewLesson(
+		id,
+		input.Slug,
+		input.Title,
+		input.Summary,
+		input.Body,
+		subj,
+		cType,
+		input.VideoURL,
+		input.ReadingTime,
+	)
+	if err != nil {
+		return err
+	}
+
+	return uc.repo.Save(ctx, newLesson)
+}
+
+func (uc *UseCase) DeleteLesson(ctx context.Context, slug string) error {
+	return uc.repo.Delete(ctx, slug)
 }

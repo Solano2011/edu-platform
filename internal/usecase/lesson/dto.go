@@ -27,3 +27,14 @@ type DetailDTO struct {
 	ReadingTime   int
 	DateFormatted string
 }
+
+type CreateLessonInput struct {
+	Slug        string
+	Title       string
+	Summary     string
+	Body        string
+	Subject     string
+	ContentType string
+	VideoURL    string
+	ReadingTime int
+}
