@@ -20,6 +20,9 @@ func NewRouter(homeHandler *handler.HomeHandler, adminHandler *handler.AdminHand
 	// Панель репетитора (Админка)
 	mux.HandleFunc("GET /admin/lessons/new", adminHandler.ServeNewForm)
 	mux.HandleFunc("POST /admin/lessons", adminHandler.HandleCreate)
+	mux.HandleFunc("GET /admin/lessons/{slug}/edit", adminHandler.ServeEditForm) // Форма редактирования
+	mux.HandleFunc("POST /admin/lessons/{slug}/edit", adminHandler.HandleUpdate) // Сохранение изменений
 	mux.HandleFunc("POST /admin/lessons/{slug}/delete", adminHandler.HandleDelete)
+
 	return mux
 }

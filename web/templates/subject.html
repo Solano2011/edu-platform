@@ -1,33 +1,58 @@
 {{define "content"}}
-<a href="/" class="back-link">← Ко всем направлениям</a>
+<div class="w-full flex flex-col">
+    <div class="mb-8">
+        <a href="/" class="inline-flex items-center text-gold-300 hover:text-gold-400 transition-colors text-base mb-4">
+            ← Ко всем направлениям
+        </a>
+        <h1 class="text-3xl sm:text-4xl font-bold text-gold-400 mb-2">
+            {{.SubjectName}}
+        </h1>
+        <p class="text-gold-200/80 text-lg">
+            Структурированные конспекты, исторические документы и видеолекции
+        </p>
+    </div>
 
-<section class="hero">
-    <h1>{{.SubjectName}}: учебные материалы и видеоуроки</h1>
-    <p>Структурированные конспекты, разборы сложных тем и видеолекции для подготовки к экзаменам.</p>
-</section>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{range .Lessons}}
+        <article class="gold-border-card bg-white rounded-2xl p-6 flex flex-col justify-between relative overflow-hidden group">
+            <div class="absolute inset-0 opacity-5 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center pointer-events-none"></div>
 
-<section class="grid">
-    {{range .Lessons}}
-    <article class="card">
-        <div>
-            <div class="badges">
-                <span class="badge">{{.Subject}}</span>
-                {{if .HasVideo}}
-                <span class="badge video">▶ Видео + Конспект</span>
-                {{else}}
-                <span class="badge article">📄 Статья</span>
-                {{end}}
+            <div class="relative z-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-burgundy-900 text-gold-300 border border-gold-500/50 font-semibold">
+                        {{.Subject}}
+                    </span>
+                    {{if .HasVideo}}
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-gold-500 text-burgundy-900 font-bold">
+                        ▶ Видео + Конспект
+                    </span>
+                    {{else}}
+                    <span class="text-xs px-2.5 py-1 rounded-md bg-burgundy-800 text-gold-200 font-medium">
+                        📄 Статья
+                    </span>
+                    {{end}}
+                </div>
+
+                <h2 class="text-xl font-bold text-burgundy-900 mb-3 group-hover:text-gold-600 transition-colors leading-snug">
+                    <a href="/lessons/{{.Slug}}" class="no-underline text-inherit">
+                        {{.Title}}
+                    </a>
+                </h2>
+                <p class="text-gray-700 text-sm leading-relaxed mb-6">
+                    {{.Summary}}
+                </p>
             </div>
-            <h2><a href="/lessons/{{.Slug}}">{{.Title}}</a></h2>
-            <p>{{.Summary}}</p>
+
+            <div class="relative z-10 pt-4 border-t border-gray-200 flex justify-between text-xs text-gray-500">
+                <span>⏱ ~{{.ReadingTime}} мин</span>
+                <span>{{.DateFormatted}}</span>
+            </div>
+        </article>
+        {{else}}
+        <div class="col-span-full gold-border-card bg-white rounded-2xl p-12 text-center text-gray-700 text-lg">
+            В этом направлении пока нет опубликованных материалов.
         </div>
-        <div class="meta">
-            <span>⏱ ~{{.ReadingTime}} мин</span>
-            <span>{{.DateFormatted}}</span>
-        </div>
-    </article>
-    {{else}}
-    <p>В этом направлении пока нет опубликованных материалов.</p>
-    {{end}}
-</section>
+        {{end}}
+    </div>
+</div>
 {{end}}

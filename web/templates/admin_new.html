@@ -1,68 +1,83 @@
 {{define "content"}}
-<a href="/" class="back-link">← На главную</a>
-
-<div style="max-width: 700px; margin: 0 auto; background-color: var(--bg-cream); border: 1px solid rgba(54, 21, 14, 0.15); border-radius: 20px; padding: 2.5rem; box-shadow: 0 8px 24px rgba(54, 21, 14, 0.08);">
-    <h1 style="font-family: 'Georgia', serif; font-size: 2rem; color: var(--espresso); margin-bottom: 1.5rem;">
-        Добавление нового урока
-    </h1>
-
-    {{if .Error}}
-    <div style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.95rem;">
-        {{.Error}}
+<div class="w-full max-w-2xl flex flex-col">
+    <div class="mb-4">
+        <a href="/" class="inline-flex items-center text-gold-300 hover:text-gold-400 transition-colors text-base mb-2">
+            ← На главную
+        </a>
     </div>
-    {{end}}
 
-    <form action="/admin/lessons" method="POST" style="display: flex; flex-direction: column; gap: 1.25rem;">
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Направление (предмет):</label>
-            <select name="subject" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-                <option value="history">История</option>
-                <option value="social">Обществознание</option>
-            </select>
+    <div class="gold-border-card bg-white rounded-2xl p-8 sm:p-10 shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 bg-[url('https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center pointer-events-none"></div>
+
+        <div class="relative z-10">
+            <h1 class="text-2xl sm:text-3xl font-bold text-burgundy-900 mb-6">
+                Добавление нового урока
+            </h1>
+
+            {{if .Error}}
+            <div class="bg-red-100 border border-red-300 text-red-800 p-4 rounded-xl mb-6 text-sm">
+                {{.Error}}
+            </div>
+            {{end}}
+
+            <form action="/admin/lessons" method="POST" enctype="multipart/form-data" class="flex flex-col gap-5">
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Направление (предмет):</label>
+                    <select name="subject" required class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none bg-white text-gray-900 text-base">
+                        <option value="history">История</option>
+                        <option value="social">Обществознание</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Тип контента:</label>
+                    <select name="content_type" required class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none bg-white text-gray-900 text-base">
+                        <option value="mixed">▶ Видео + Конспект (Mixed)</option>
+                        <option value="article">📄 Статья (Article)</option>
+                        <option value="video">▶ Видеоурок (Video)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Заголовок урока:</label>
+                    <input type="text" name="title" required placeholder="Например: Петровские реформы начала XVIII века" class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">URL Slug (необязательно):</label>
+                    <input type="text" name="slug" placeholder="petrovskie-reformy" class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Краткое описание (для карточки):</label>
+                    <textarea name="summary" rows="3" required placeholder="Пару предложений о том, чему посвящен урок..." class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Иллюстрация / Карта к уроку (необязательно):</label>
+                    <input type="file" name="lesson_image" accept="image/*" class="w-full p-2 rounded-xl border border-gray-300 focus:border-gold-500 outline-none text-sm bg-gray-50">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Ссылка на видео (YouTube Embed URL):</label>
+                    <input type="text" name="video_url" placeholder="https://www.youtube.com/embed/..." class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Время чтения (в минутах):</label>
+                    <input type="number" name="reading_time" value="10" min="1" required class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-burgundy-900 mb-1">Полный текст конспекта (поддерживает <h3>, <p>, <ul>, <li>, <strong>):</label>
+                    <textarea name="body" rows="7" required placeholder="<h3>1. Введение</h3><p>Текст конспекта...</p>" class="w-full p-3 rounded-xl border border-gray-300 focus:border-gold-500 focus:ring-1 focus:ring-gold-500 outline-none text-base font-mono"></textarea>
+                </div>
+
+                <button type="submit" class="w-full mt-2 py-3.5 rounded-xl bg-burgundy-900 text-gold-300 border border-gold-500 font-bold hover:bg-gold-500 hover:text-burgundy-900 transition-all duration-300 shadow-md text-base">
+                    Опубликовать урок
+                </button>
+            </form>
         </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Тип контента:</label>
-            <select name="content_type" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-                <option value="mixed">▶ Видео + Конспект (Mixed)</option>
-                <option value="article">📄 Статья (Article)</option>
-                <option value="video">▶ Видеоурок (Video)</option>
-            </select>
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Заголовок урока:</label>
-            <input type="text" name="title" required placeholder="Например: Петровские реформы начала XVIII века" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">URL Slug (необязательно, сгенерируется из заголовка):</label>
-            <input type="text" name="slug" placeholder="petrovskie-reformy" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Краткое описание (для карточки):</label>
-            <textarea name="summary" rows="3" required placeholder="Пару предложений о том, чему посвящен урок..." style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem; resize: vertical;"></textarea>
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Ссылка на видео (YouTube Embed URL):</label>
-            <input type="text" name="video_url" placeholder="https://www.youtube.com/embed/..." style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Время чтения (в минутах):</label>
-            <input type="number" name="reading_time" value="10" min="1" required style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem;">
-        </div>
-
-        <div>
-            <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--espresso);">Полный текст конспекта (поддерживает HTML теги <h3>, <p>, <ul>, <li>, <strong>):</label>
-            <textarea name="body" rows="8" required placeholder="<h3>1. Введение</h3><p>Текст конспекта...</p>" style="width: 100%; padding: 0.75rem; border-radius: 8px; border: 1px solid var(--border-warm); background: #fff; color: var(--text-main); font-size: 1rem; font-family: monospace; resize: vertical;"></textarea>
-        </div>
-
-        <button type="submit" style="background-color: var(--espresso); color: var(--bg-cream); border: none; padding: 0.9rem 1.5rem; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: opacity 0.2s; margin-top: 0.5rem;">
-            Опубликовать урок
-        </button>
-    </form>
+    </div>
 </div>
 {{end}}

@@ -2,7 +2,6 @@ package lesson
 
 import "html/template"
 
-// CardDTO — проекция урока специально для карточек на главной странице.
 type CardDTO struct {
 	Slug          string
 	Title         string
@@ -14,16 +13,16 @@ type CardDTO struct {
 	DateFormatted string
 }
 
-// DetailDTO — полная проекция урока для страницы чтения статьи / просмотра видео.
 type DetailDTO struct {
 	Slug          string
 	Title         string
 	Summary       string
-	BodyHTML      template.HTML // Безопасный HTML-конспект для рендера
-	SubjectCode   string        // Например "history" (для кнопки «Назад к направлению»)
-	SubjectName   string        // Например "История"
+	BodyHTML      template.HTML
+	SubjectCode   string
+	SubjectName   string
 	HasVideo      bool
 	VideoURL      string
+	ImageURL      string
 	ReadingTime   int
 	DateFormatted string
 }
@@ -36,5 +35,30 @@ type CreateLessonInput struct {
 	Subject     string
 	ContentType string
 	VideoURL    string
+	ImageURL    string
+	ReadingTime int
+}
+
+type UpdateLessonInput struct {
+	Slug        string
+	Title       string
+	Summary     string
+	Body        string
+	Subject     string
+	ContentType string
+	VideoURL    string
+	ImageURL    string
+	ReadingTime int
+}
+
+type EditLessonDTO struct {
+	Slug        string
+	Title       string
+	Summary     string
+	Body        string
+	Subject     string
+	ContentType string
+	VideoURL    string
+	ImageURL    string
 	ReadingTime int
 }

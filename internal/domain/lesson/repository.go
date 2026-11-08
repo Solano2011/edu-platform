@@ -7,5 +7,6 @@ type Repository interface {
 	FindPublishedBySubject(ctx context.Context, subject Subject) ([]*Lesson, error)
 	FindBySlug(ctx context.Context, slug string) (*Lesson, error)
 	Save(ctx context.Context, lesson *Lesson) error
-	Delete(ctx context.Context, slug string) error // Новый метод удаления по slug
+	Update(ctx context.Context, lesson *Lesson) error // Новый метод
+	Delete(ctx context.Context, slug string) error
 }

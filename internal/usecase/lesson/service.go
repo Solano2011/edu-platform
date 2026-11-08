@@ -58,6 +58,7 @@ func (uc *UseCase) GetLessonBySlug(ctx context.Context, slug string) (DetailDTO,
 		SubjectName:   l.Subject().DisplayName(),
 		HasVideo:      l.VideoURL() != "",
 		VideoURL:      l.VideoURL(),
+		ImageURL:      l.ImageURL(),
 		ReadingTime:   l.ReadingTime(),
 		DateFormatted: l.PublishedAt().Format("02.01.2006"),
 	}, nil
@@ -78,6 +79,7 @@ func (uc *UseCase) CreateLesson(ctx context.Context, input CreateLessonInput) er
 		subj,
 		cType,
 		input.VideoURL,
+		input.ImageURL,
 		input.ReadingTime,
 	)
 	if err != nil {
@@ -89,4 +91,49 @@ func (uc *UseCase) CreateLesson(ctx context.Context, input CreateLessonInput) er
 
 func (uc *UseCase) DeleteLesson(ctx context.Context, slug string) error {
 	return uc.repo.Delete(ctx, slug)
+}
+
+func (uc *UseCase) GetLessonForEdit(ctx context.Context, slug string) (EditLessonDTO, error) {
+	l, err := uc.repo.FindBySlug(ctx, slug)
+	if err != nil {
+		return EditLessonDTO{}, err
+	}
+
+	return EditLessonDTO{
+		Slug:        l.Slug(),
+		Title:       l.Title(),
+		Summary:     l.Summary(),
+		Body:        l.Body(),
+		Subject:     string(l.Subject()),
+		ContentType: string(l.ContentType()),
+		VideoURL:    l.VideoURL(),
+		ImageURL:    l.ImageURL(),
+		ReadingTime: l.ReadingTime(),
+	}, nil
+}
+
+func (uc *UseCase) UpdateLesson(ctx context.Context, input UpdateLessonInput) error {
+	l, err := uc.repo.FindBySlug(ctx, input.Slug)
+	if err != nil {
+		return err
+	}
+
+	subj := lesson.Subject(input.Subject)
+	cType := lesson.ContentType(input.ContentType)
+
+	err = l.Update(
+		input.Title,
+		input.Summary,
+		input.Body,
+		subj,
+		cType,
+		input.VideoURL,
+		input.ImageURL,
+		input.ReadingTime,
+	)
+	if err != nil {
+		return err
+	}
+
+	return uc.repo.Update(ctx, l)
 }
