@@ -1,0 +1,84 @@
+{{define "content"}}
+<div class="w-full max-w-4xl flex flex-col">
+    <div class="mb-6 flex items-center justify-between">
+        <a href="/" class="text-gold-300 hover:text-gold-400 text-base">
+            ← На главную
+        </a>
+        <a href="/admin/lessons/new" class="text-gold-300 hover:text-gold-400 text-sm">
+            + Создать урок
+        </a>
+    </div>
+
+    <!-- Блок генерации инвайта -->
+    <div class="gold-border-card bg-white rounded-2xl p-6 sm:p-8 shadow-2xl mb-8">
+        <h1 class="text-2xl font-bold text-burgundy-900 mb-2">
+            Приглашение новых учеников
+        </h1>
+        <p class="text-gray-600 text-sm mb-6">
+            Сгенерируйте персональную ссылку для ученика. Зарегистрироваться на платформе можно только по действительному коду приглашения.
+        </p>
+
+        <form action="/admin/invites" method="POST" class="flex flex-col sm:flex-row gap-4">
+            <input 
+                type="text" 
+                name="student_note" 
+                placeholder="Имя ученика или класс (например: Алексей Смирнов, 11 класс)" 
+                required
+                class="flex-1 p-3 rounded-xl border border-gray-300 focus:border-gold-500 outline-none text-base">
+            <button type="submit" class="px-6 py-3 rounded-xl bg-burgundy-900 text-gold-300 border border-gold-500 font-bold hover:bg-gold-500 hover:text-burgundy-900 transition-all shadow-md whitespace-nowrap">
+                Сгенерировать код
+            </button>
+        </form>
+    </div>
+
+    <!-- Список созданных инвайтов -->
+    <div class="gold-border-card bg-white rounded-2xl p-6 sm:p-8 shadow-2xl overflow-x-auto">
+        <h2 class="text-xl font-bold text-burgundy-900 mb-4">
+            Список инвайтов
+        </h2>
+
+        {{if .Invites}}
+        <table class="w-full text-left text-sm text-gray-700">
+            <thead>
+                <tr class="border-b border-gray-200 text-burgundy-900 font-bold">
+                    <th class="pb-3">Ученик / Пометка</th>
+                    <th class="pb-3">Ссылка для отправки</th>
+                    <th class="pb-3">Статус</th>
+                    <th class="pb-3">Действует до</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100">
+                {{range .Invites}}
+                <tr>
+                    <td class="py-3 font-semibold">{{.StudentNote}}</td>
+                    <td class="py-3">
+                        <input 
+                            type="text" 
+                            readonly 
+                            value="/register?code={{.Code}}" 
+                            onclick="this.select(); navigator.clipboard.writeText(window.location.origin + '/register?code={{.Code}}'); alert('Ссылка скопирована в буфер обмена!');"
+                            title="Нажмите, чтобы скопировать"
+                            class="bg-gray-100 text-xs px-2 py-1 rounded border border-gray-300 font-mono cursor-pointer w-48 text-ellipsis">
+                    </td>
+                    <td class="py-3">
+                        {{if .IsUsed}}
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-200 text-gray-600">
+                            ✓ Использован
+                        </span>
+                        {{else}}
+                        <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                            Активен
+                        </span>
+                        {{end}}
+                    </td>
+                    <td class="py-3 text-xs text-gray-500">{{.ExpiresAt}}</td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+        {{else}}
+        <p class="text-gray-500 text-sm text-center py-4">Активных инвайтов пока нет. Сгенерируйте первый с помощью формы выше.</p>
+        {{end}}
+    </div>
+</div>
+{{end}}

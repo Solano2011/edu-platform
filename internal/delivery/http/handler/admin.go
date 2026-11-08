@@ -50,9 +50,11 @@ func NewAdminHandler(uc *lessonUC.UseCase, templatesDir string, logger *slog.Log
 }
 
 type adminPageData struct {
-	Title  string
-	Error  string
-	Lesson lessonUC.EditLessonDTO
+	Title           string
+	Error           string
+	Lesson          lessonUC.EditLessonDTO
+	IsAuthenticated bool
+	IsAdmin         bool
 }
 
 func (h *AdminHandler) ServeNewForm(w http.ResponseWriter, r *http.Request) {

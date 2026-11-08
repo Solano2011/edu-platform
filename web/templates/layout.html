@@ -72,8 +72,9 @@
 </head>
 <body class="min-h-full flex flex-col justify-between text-gray-900 selection:bg-gold-500 selection:text-burgundy-900 overflow-x-hidden">
 
-    <!-- Шапка (Навбар) -->
+   <!-- Шапка (Навбар) -->
     <header class="w-full bg-burgundy-900/95 border-b border-gold-500/40 px-6 sm:px-12 py-4 flex items-center justify-between shadow-xl backdrop-blur-sm sticky top-0 z-40">
+        <!-- Левая часть: только логотип и название -->
         <div class="flex items-center space-x-4 sm:space-x-6">
             <a href="/" class="text-gold-400 font-bold text-xl sm:text-2xl tracking-wide hover:text-gold-300 transition-colors">
                 EduPlatform
@@ -83,15 +84,31 @@
             </span>
         </div>
 
+       <!-- Правая часть: кнопки действий с учетом прав пользователя -->
         <div class="flex items-center space-x-4">
+            {{if .IsAdmin}}
             <a href="/admin/lessons/new" class="text-xs sm:text-sm text-gold-300/80 hover:text-gold-300 transition-colors hidden md:inline-block">
                 + Добавить урок
             </a>
-            <button onclick="openModal('Вход в личный кабинет', 'Система авторизации находится в разработке. Доступ открыт для всех материалов.')" class="px-5 py-2 rounded-xl text-gold-300 border border-gold-500 bg-burgundy-800 hover:bg-gold-500 hover:text-burgundy-900 transition-all duration-300 shadow-sm text-sm sm:text-base font-semibold">
+            <a href="/admin/invites" class="text-xs sm:text-sm text-gold-300/80 hover:text-gold-300 transition-colors hidden md:inline-block">
+                Инвайты учеников
+            </a>
+            {{end}}
+
+            {{if .IsAuthenticated}}
+            <form action="/logout" method="POST" class="inline m-0">
+                <button type="submit" class="px-5 py-2 rounded-xl text-gold-300 border border-gold-500 bg-burgundy-800 hover:bg-gold-500 hover:text-burgundy-900 transition-all duration-300 shadow-sm text-sm sm:text-base font-semibold cursor-pointer">
+                    Выйти
+                </button>
+            </form>
+            {{else}}
+            <a href="/login" class="px-5 py-2 rounded-xl text-gold-300 border border-gold-500 bg-burgundy-800 hover:bg-gold-500 hover:text-burgundy-900 transition-all duration-300 shadow-sm text-sm sm:text-base font-semibold no-underline">
                 Войти в кабинет
-            </button>
+            </a>
+            {{end}}
         </div>
     </header>
+
 
     <!-- Основной контент страницы -->
     <main class="flex-grow flex items-center justify-center px-4 sm:px-8 py-10 w-full max-w-6xl mx-auto">

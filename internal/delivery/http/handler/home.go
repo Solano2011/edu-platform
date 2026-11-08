@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"edu-platform/internal/delivery/http/middleware"
 	"edu-platform/internal/domain/lesson"
 	lessonUC "edu-platform/internal/usecase/lesson"
 )
@@ -53,80 +54,91 @@ func NewHomeHandler(uc *lessonUC.UseCase, templatesDir string, logger *slog.Logg
 	}, nil
 }
 
+// Вспомогательная функция для получения статуса доступа
+func getUserAuthStatus(r *http.Request) (isAuth bool, isAdmin bool) {
+	u := middleware.UserFromContext(r.Context())
+	if u != nil {
+		return true, u.IsAdmin()
+	}
+	return false, false
+}
+
 type homePageData struct {
-	Title string
+	Title           string
+	IsAuthenticated bool
+	IsAdmin         bool
 }
 
 type subjectPageData struct {
-	Title       string
-	SubjectName string
-	Lessons     []lessonUC.CardDTO
+	Title           string
+	SubjectName     string
+	SubjectCode     string
+	Lessons         []lessonUC.CardDTO
+	IsAuthenticated bool
+	IsAdmin         bool
 }
 
 type lessonPageData struct {
-	Title  string
-	Lesson lessonUC.DetailDTO
+	Title           string
+	Lesson          lessonUC.DetailDTO
+	IsAuthenticated bool
+	IsAdmin         bool
 }
 
 func (h *HomeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	isAuth, isAdmin := getUserAuthStatus(r)
 	data := homePageData{
-		Title: "Учебная платформа | Выбор направления",
+		Title:           "EduPlatform | Обучающая платформа",
+		IsAuthenticated: isAuth,
+		IsAdmin:         isAdmin,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.homeTmpl.ExecuteTemplate(w, "layout", data); err != nil {
-		h.logger.Error("failed to render home template", slog.String("error", err.Error()))
-	}
+	h.homeTmpl.ExecuteTemplate(w, "layout", data)
 }
 
 func (h *HomeHandler) ServeSubject(w http.ResponseWriter, r *http.Request) {
-	subjectCode := r.PathValue("subject")
-
-	subjectName, lessons, err := h.lessonUseCase.GetLessonsBySubject(r.Context(), subjectCode)
+	subjParam := r.PathValue("subject")
+	subjectName, lessons, err := h.lessonUseCase.GetLessonsBySubject(r.Context(), subjParam)
 	if err != nil {
-		if errors.Is(err, lesson.ErrInvalidSubject) {
-			http.NotFound(w, r)
-			return
-		}
-		h.logger.Error("failed to get lessons by subject", slog.String("error", err.Error()))
-		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		http.NotFound(w, r)
 		return
 	}
 
+	isAuth, isAdmin := getUserAuthStatus(r)
 	data := subjectPageData{
-		Title:       subjectName + " | Учебные материалы",
-		SubjectName: subjectName,
-		Lessons:     lessons,
+		Title:           subjectName + " | Конспекты и материалы",
+		SubjectName:     subjectName,
+		SubjectCode:     subjParam,
+		Lessons:         lessons,
+		IsAuthenticated: isAuth,
+		IsAdmin:         isAdmin,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.subjectTmpl.ExecuteTemplate(w, "layout", data); err != nil {
-		h.logger.Error("failed to render subject template", slog.String("error", err.Error()))
-	}
+	h.subjectTmpl.ExecuteTemplate(w, "layout", data)
 }
 
-// ServeLesson отдает страницу чтения конкретного урока и просмотра видео
 func (h *HomeHandler) ServeLesson(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
-
-	detail, err := h.lessonUseCase.GetLessonBySlug(r.Context(), slug)
+	l, err := h.lessonUseCase.GetLessonBySlug(r.Context(), slug)
 	if err != nil {
 		if errors.Is(err, lesson.ErrLessonNotFound) {
 			http.NotFound(w, r)
 			return
 		}
-		h.logger.Error("failed to get lesson by slug", slog.String("slug", slug), slog.String("error", err.Error()))
-		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
+	isAuth, isAdmin := getUserAuthStatus(r)
 	data := lessonPageData{
-		Title:  detail.Title + " | " + detail.SubjectName,
-		Lesson: detail,
+		Title:           l.Title + " | EduPlatform",
+		Lesson:          l,
+		IsAuthenticated: isAuth,
+		IsAdmin:         isAdmin,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	if err := h.lessonTmpl.ExecuteTemplate(w, "layout", data); err != nil {
-		h.logger.Error("failed to render lesson template", slog.String("error", err.Error()))
-	}
+	h.lessonTmpl.ExecuteTemplate(w, "layout", data)
 }

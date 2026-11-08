@@ -64,6 +64,7 @@
             </div>
 
             <!-- Панель управления уроком для репетитора -->
+             {{if .IsAdmin}}
             <div class="mt-12 pt-6 border-t border-gray-200 flex flex-wrap items-center justify-end gap-3">
                 <a href="/admin/lessons/{{.Lesson.Slug}}/edit" class="px-4 py-2 rounded-xl text-burgundy-900 border border-gold-500 bg-gold-400/20 hover:bg-gold-500 hover:text-burgundy-900 transition-all text-sm font-semibold no-underline">
                     ✏️ Редактировать урок
@@ -75,6 +76,7 @@
                 </form>
             </div>
         </div>
+        {{end}}
     </article>
 </div>
 
