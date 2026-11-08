@@ -1,0 +1,224 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <style>
+        :root {
+            /* Палитра по ориентиру 2-го фото */
+            --bg-main: #DFB8A5;        /* Теплый персиково-бежевый фон */
+            --bg-cream: #F5EDE3;       /* Сливочно-кремовый цвет карточек */
+            --bg-cream-hover: #FBF7F2; /* Светлый кремовый при наведении */
+            --espresso: #36150E;       /* Глубокий темно-коричневый (шапка и заголовки) */
+            --text-main: #3A1D16;      /* Основной текст */
+            --text-muted: #6E4F45;     /* Приглушенный коричневый для описаний */
+            --terracotta: #8A3014;     /* Терракотовый акцент */
+            --berry: #993947;          /* Ягодно-бордовый акцент */
+            --forest: #2D4A34;         /* Глубокий хвойно-зеленый акцент */
+            --border-warm: #C89D88;    /* Мягкая теплая рамка */
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Шапка в стиле глубокого эспрессо со 2-го фото */
+        header {
+            background-color: var(--espresso);
+            padding: 1.1rem 2.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(54, 21, 14, 0.18);
+        }
+
+        .logo {
+            font-family: "Georgia", "Times New Roman", serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            color: var(--bg-cream);
+            text-decoration: none;
+        }
+
+        .auth-btn {
+            background-color: transparent;
+            border: 1px solid var(--bg-main);
+            color: var(--bg-cream);
+            padding: 0.5rem 1.15rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .auth-btn:hover {
+            background-color: var(--bg-cream);
+            color: var(--espresso);
+        }
+
+        main {
+            max-width: 1060px;
+            width: 100%;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
+            flex: 1;
+        }
+
+        /* Крупные карточки выбора направления (1 фото) */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .subject-card {
+            background-color: var(--bg-cream);
+            border: 2px solid var(--espresso);
+            border-radius: 42px;
+            min-height: 400px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: var(--espresso);
+            box-shadow: 0 10px 25px rgba(54, 21, 14, 0.1);
+            transition: transform 0.22s ease, box-shadow 0.22s ease, background-color 0.22s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .subject-card:hover {
+            transform: translateY(-6px);
+            background-color: var(--bg-cream-hover);
+            box-shadow: 0 18px 36px rgba(54, 21, 14, 0.18);
+        }
+
+        .subject-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+        }
+
+        .subject-card.history::before { background-color: var(--terracotta); }
+        .subject-card.social::before { background-color: var(--forest); }
+
+        .subject-card h2 {
+            font-family: "Georgia", "Times New Roman", serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        .subject-card p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 280px;
+        }
+
+        /* Стили для страницы списка уроков (3 фото в новой палитре) */
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.25rem;
+            color: var(--espresso);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        .hero { margin-bottom: 2.5rem; }
+        .hero h1 {
+            font-family: "Georgia", "Times New Roman", serif;
+            font-size: 2.3rem;
+            color: var(--espresso);
+            margin-bottom: 0.5rem;
+        }
+        .hero p { color: var(--text-muted); font-size: 1.05rem; }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--bg-cream);
+            border: 1px solid rgba(54, 21, 14, 0.15);
+            border-radius: 16px;
+            padding: 1.6rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 6px 18px rgba(54, 21, 14, 0.08);
+            transition: transform 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 26px rgba(54, 21, 14, 0.15);
+        }
+
+        .badges { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.65rem;
+            border-radius: 6px;
+            color: var(--bg-cream);
+            background-color: var(--espresso);
+        }
+        .badge.video { background-color: var(--terracotta); }
+        .badge.article { background-color: var(--forest); }
+
+        .card h2 {
+            font-family: "Georgia", "Times New Roman", serif;
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            line-height: 1.35;
+        }
+        .card h2 a { color: var(--espresso); text-decoration: none; transition: color 0.15s; }
+        .card h2 a:hover { color: var(--terracotta); }
+
+        .card p { color: var(--text-muted); font-size: 0.93rem; margin-bottom: 1.5rem; }
+
+        .meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(54, 21, 14, 0.12);
+            padding-top: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="/" class="logo">EduPlatform</a>
+        <a href="/login" class="auth-btn">Войти в кабинет</a>
+    </header>
+    <main>
+        {{template "content" .}}
+    </main>
+</body>
+</html>
+{{end}}

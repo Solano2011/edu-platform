@@ -1,0 +1,33 @@
+{{define "content"}}
+<a href="/" class="back-link">← Ко всем направлениям</a>
+
+<section class="hero">
+    <h1>{{.SubjectName}}: учебные материалы и видеоуроки</h1>
+    <p>Структурированные конспекты, разборы сложных тем и видеолекции для подготовки к экзаменам.</p>
+</section>
+
+<section class="grid">
+    {{range .Lessons}}
+    <article class="card">
+        <div>
+            <div class="badges">
+                <span class="badge">{{.Subject}}</span>
+                {{if .HasVideo}}
+                <span class="badge video">▶ Видео + Конспект</span>
+                {{else}}
+                <span class="badge article">📄 Статья</span>
+                {{end}}
+            </div>
+            <h2><a href="/lessons/{{.Slug}}">{{.Title}}</a></h2>
+            <p>{{.Summary}}</p>
+        </div>
+        <div class="meta">
+            <span>⏱ ~{{.ReadingTime}} мин</span>
+            <span>{{.DateFormatted}}</span>
+        </div>
+    </article>
+    {{else}}
+    <p>В этом направлении пока нет опубликованных материалов.</p>
+    {{end}}
+</section>
+{{end}}

@@ -1,0 +1,21 @@
+﻿# Скомпилированные бинарники Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+bin/
+dist/
+
+# Тесты и кэш
+*.test
+*.out
+
+# Локальные конфиги и секреты
+.env
+.env.local
+
+# Системные и IDE файлы
+.idea/
+.DS_Store
+Thumbs.db
