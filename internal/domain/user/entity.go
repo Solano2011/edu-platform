@@ -26,3 +26,14 @@ func (u *User) PasswordHash() PasswordHash { return u.passwordHash }
 func (u *User) Role() Role                 { return u.role }
 func (u *User) CreatedAt() time.Time       { return u.createdAt }
 func (u *User) IsAdmin() bool              { return u.role == RoleAdmin }
+
+// Restore восстанавливает сущность User из постоянного хранилища без повторной валидации
+func Restore(id string, email string, passwordHash string, role Role, createdAt time.Time) *User {
+	return &User{
+		id:           id,
+		email:        Email{value: email},
+		passwordHash: NewPasswordHashFromHash([]byte(passwordHash)),
+		role:         role,
+		createdAt:    createdAt,
+	}
+}

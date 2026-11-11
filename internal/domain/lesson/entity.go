@@ -96,3 +96,29 @@ func (l *Lesson) ImageURL() string         { return l.imageURL } // Геттер
 func (l *Lesson) ReadingTime() int         { return l.readingTime }
 func (l *Lesson) PublishedAt() time.Time   { return l.publishedAt }
 func (l *Lesson) IsPublished() bool        { return l.isPublished }
+
+// Restore восстанавливает сущность Lesson из постоянного хранилища
+func Restore(
+	id, slug, title, summary, body string,
+	subject Subject,
+	contentType ContentType,
+	videoURL, imageURL string,
+	readingTime int,
+	publishedAt time.Time,
+	isPublished bool,
+) *Lesson {
+	return &Lesson{
+		id:          id,
+		slug:        slug,
+		title:       title,
+		summary:     summary,
+		body:        body,
+		subject:     subject,
+		contentType: contentType,
+		videoURL:    videoURL,
+		imageURL:    imageURL,
+		readingTime: readingTime,
+		publishedAt: publishedAt,
+		isPublished: isPublished,
+	}
+}

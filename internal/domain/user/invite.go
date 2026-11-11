@@ -68,3 +68,22 @@ func (i *Invite) IsValid() error {
 	}
 	return nil
 }
+
+// RestoreInvite восстанавливает сущность Invite из базы данных
+func RestoreInvite(
+	code, studentNote string,
+	role Role,
+	isUsed bool,
+	usedBy string,
+	createdAt, expiresAt time.Time,
+) *Invite {
+	return &Invite{
+		code:        code,
+		studentNote: studentNote,
+		role:        role,
+		isUsed:      isUsed,
+		usedBy:      usedBy,
+		createdAt:   createdAt,
+		expiresAt:   expiresAt,
+	}
+}

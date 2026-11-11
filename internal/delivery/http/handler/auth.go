@@ -62,8 +62,11 @@ type authPageData struct {
 }
 
 type invitePageData struct {
-	Title   string
-	Invites []authUC.InviteDTO
+	Title           string
+	Invites         []authUC.InviteDTO
+	IsAuthenticated bool
+	IsAdmin         bool
+	Error           string
 }
 
 func (h *AuthHandler) ServeLogin(w http.ResponseWriter, r *http.Request) {
@@ -195,16 +198,22 @@ func (h *AuthHandler) HandleLogout(w http.ResponseWriter, r *http.Request) {
 func (h *AuthHandler) ServeAdminInvites(w http.ResponseWriter, r *http.Request) {
 	invites, err := h.authUseCase.ListInvites(r.Context())
 	if err != nil {
+		h.logger.Error("failed to load invites", slog.String("error", err.Error()))
 		http.Error(w, "Не удалось загрузить инвайты", http.StatusInternalServerError)
 		return
 	}
 
 	data := invitePageData{
-		Title:   "Управление приглашениями учеников",
-		Invites: invites,
+		Title:           "Управление приглашениями учеников",
+		Invites:         invites,
+		IsAuthenticated: true,
+		IsAdmin:         true,
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	h.adminInviteTmpl.ExecuteTemplate(w, "layout", data)
+	if err := h.adminInviteTmpl.ExecuteTemplate(w, "layout", data); err != nil {
+		h.logger.Error("failed to render admin invites template", slog.String("error", err.Error()))
+	}
 }
 
 // HandleCreateInvite создает новый инвайт по кнопке из админки

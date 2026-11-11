@@ -1,0 +1,43 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edu_platform_app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT=8080
+      - DATABASE_URL=postgres://edu_user:edu_password_secure@postgres:5432/edu_platform?sslmode=disable
+    volumes:
+      # Сохраняем загруженные картинки уроков между перезапусками
+      - uploads_data:/app/web/static/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: edu_platform_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: edu_platform
+      POSTGRES_USER: edu_user
+      POSTGRES_PASSWORD: edu_password_secure
+    # Порт наружу 5433 можно оставить для удобства подключения через DBeaver / psql локально
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata_v2:/var/lib/postgresql/data
+      - ./migrations:/docker-entrypoint-initdb.d:ro
+    # Healthcheck нужен, чтобы Go-сервер не стартовал раньше, чем база будет готова принимать запросы
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U edu_user -d edu_platform"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata_v2:
+  uploads_data:
